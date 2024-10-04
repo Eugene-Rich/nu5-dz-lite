@@ -5,45 +5,49 @@ import my_sch
 from fri13 import proc_fri13
 from victory import proc_v
 
-def create_dir():
-    nrc = input('Введите имя каталога : ')
+def decorator_function(func):
+    def inner():
+        print('-')
+        vl = func()
+        print('\n'.join(vl))
+        print('-' * 20)
+    return inner
+
+def create_dir(nrc):
     os.mkdir(nrc)
-def delete_dir_f():
-    nrc = input('Введите имя каталога : ')
-    shutil.rmtree(nrc)
-def copy_dir_f():
-    cish = input('Введите имя исходного каталога : ')
-    cdist = input('Введите имя конечного каталога : ')
+def delete_dir_f(nrc):
+   shutil.rmtree(nrc)
+def copy_dir_f(cish, cdist):
     shutil.copytree(cish, cdist)
+@decorator_function
 def view_dir_f():
-    for file in os.scandir():
-        print(file.name)
+    listfa = [file.name for file in os.scandir()]
     os.scandir().close()
-
+    return listfa
+@decorator_function
 def view_f():
-    for file in os.scandir():
-        if os.path.isfile(file):
-            print(file.name)
+    listfa = [file.name for file in os.scandir() if os.path.isfile(file)]
     os.scandir().close()
-
+    return listfa
+@decorator_function
 def view_d():
-    for file in os.scandir():
-        if os.path.isdir(file):
-            print(file.name)
+    listfa = [file.name for file in os.scandir() if os.path.isdir(file)]
     os.scandir().close()
+    return listfa
 
 def view_inf_os():
-    print(os.name)
+    return(os.name)
 
 def view_avt():
-    print('Евгений Попов')
+    return ('Евгений Попов')
 
-def chan_dir():
-    nrc = input('Введите имя каталога : ')
+def chan_dir(nrc):
     try:
         os.chdir(nrc)
+        return True
     except FileNotFoundError:
-        print('Нет такого каталога.')
+        return False
+
 
 
 print ('Консольный файловый менеджер')
@@ -59,11 +63,18 @@ print('13.Выход')
 while True:
     vnc = input('Введите номер команды : ')
     if vnc == '1':
-        create_dir()
+        nrc = input('Введите имя каталога : ')
+        create_dir(nrc)
+        print('Каталог создан.')
     elif vnc == '2':
-        delete_dir_f()
+        nrc = input('Введите имя каталога : ')
+        delete_dir_f(nrc)
+        print('Каталог удален.')
     elif vnc == '3':
-        copy_dir_f()
+        cish = input('Введите имя исходного каталога : ')
+        cdist = input('Введите имя конечного каталога : ')
+        copy_dir_f(cish, cdist)
+        print('Каталог скопирован.')
     elif vnc == '4':
         view_dir_f()
     elif vnc == '5':
@@ -71,17 +82,16 @@ while True:
     elif vnc == '6':
         view_f()
     elif vnc == '7':
-        view_inf_os()
+        print(view_inf_os())
     elif vnc == '8':
-        view_avt()
+        print(view_avt())
     elif vnc == '9':
         proc_v()
     elif vnc == '10':
         my_sch.osn_prg_sch()
     elif vnc == '11':
-        chan_dir()
-
-
+        nrc = input('Введите имя каталога : ')
+        print('Текущий каталог изменен.' if chan_dir(nrc) else 'Нет такого каталога.')
     elif vnc == '12':
         proc_fri13()
     elif vnc == '13':
